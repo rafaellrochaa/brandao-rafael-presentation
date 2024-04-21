@@ -1,10 +1,10 @@
 require("dotenv").config();
 module.exports = {
-  title: "Haochen",
-  tagline: "Learning is a Lifelong Process",
+  title: "Rafael Brandão",
+  tagline: "Be aware to good and bad things why everything teach us something and knowledge is precious",
   //disableTitleTagline: true,
   //titleDelimiter: "*",
-  url: "https://haochenqi.com/",
+  url: "https://portifolio-brandao.com.br/",
   baseUrl: "/",
   customFields: {
     // Put your custom environment here
@@ -14,31 +14,18 @@ module.exports = {
   //onBrokenLinks: "throw",
   //onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  //organizationName: "Haochen", // Usually your GitHub org/user name.
-  projectName: "Haochen-Blog", // Usually your repo name.
+  // Usually your GitHub org/user name.
+  projectName: "Portifolio-rafael-brandao", // Usually your repo name.
   stylesheets: ["https://fonts.font.im/css?family=Raleway:500,700"],
   themeConfig: {
     navbar: {
-      title: "Haochen",
+      title: "Rafael Brandão",
       logo: {
         alt: "My Site Logo",
-        src: "img/haochen.logo.svg",
+        src: "img/logo_light.svg"
       },
       items: [
-        // {
-        //   to: "docs/",
-        //   activeBasePath: "docs",
-        //   label: "Docs",
-        //   position: "left",
-        // },
         { type: "localeDropdown", position: "right" },
-        { to: "blog", label: "Blog", position: "right" },
-
-        {
-          href: "https://github.com/HaochenQ",
-          label: "GitHub",
-          position: "right",
-        },
       ],
     },
     footer: {
@@ -49,59 +36,12 @@ module.exports = {
           items: [
             {
               label: "Linkedin",
-              href: "https://www.linkedin.com/in/haochen-qi-a36393171/",
-            },
-            {
-              label: "Facebook",
-              href: "https://www.facebook.com/haochen.qi.520",
-            },
-          ],
-        },
-        // {
-        //   title: "Docusaurus",
-        //   items: [
-        //     {
-        //       label: "Style Guide",
-        //       to: "docs/",
-        //     },
-        //     {
-        //       label: "Second Doc",
-        //       to: "docs/doc2/",
-        //     },
-        //   ],
-        // },
-        // {
-        //   title: "Community",
-        //   items: [
-        //     {
-        //       label: "Stack Overflow",
-        //       href: "https://stackoverflow.com/questions/tagged/docusaurus",
-        //     },
-        //     {
-        //       label: "Discord",
-        //       href: "https://discordapp.com/invite/docusaurus",
-        //     },
-        //     {
-        //       label: "Twitter",
-        //       href: "https://twitter.com/docusaurus",
-        //     },
-        //   ],
-        // },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Blog",
-              to: "blog",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/HaochenQ",
-            },
+              href: "https://www.linkedin.com/in/rafael-brand%C3%A3o-825494111/",
+            }
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Haochen. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Rafael Brandão. Built with Docusaurus.`,
     },
   },
   presets: [
@@ -127,13 +67,13 @@ module.exports = {
   ],
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "zh-cn"],
+    locales: ["en", "pr-br"],
     localeConfigs: {
       en: {
         label: "English",
       },
-      "zh-cn": {
-        label: "中文",
+      "pr-br": {
+        label: "Português",
       },
     },
   },

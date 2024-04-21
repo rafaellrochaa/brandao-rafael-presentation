@@ -171,6 +171,13 @@ html[data-theme="dark"] .projects {
   opacity: 1;
 }
 
+.logo-dimension-df {
+  width: 5em;
+}
+
+.logo-dimension-lg {
+  width: 12.65em;
+}
 .work-info {
   background: var(--ifm-color-primary-lightest);
   padding: 1rem 2rem;
@@ -381,7 +388,7 @@ html[data-theme="dark"] .experience {
   display: flex;
   flex-direction: row;
   justify-content:flex-start;
-  margin-bottom: 4rem;
+  margin-bottom: 1rem;
   /* flex-wrap: wrap; */
   overflow:scroll;
 }

@@ -40,7 +40,7 @@ function Home() {
   return (
     <Layout
       //title={` ${siteConfig.title}`}
-      title={`Hello from ${siteConfig.title}`}
+      title={`Portifolio`}
       description="Description will go into a meta tag in <head />"
     >
       <Grid container style={{ padding: "5%" }} className="hero">
@@ -48,7 +48,7 @@ function Home() {
         <Grid item xs={12} lg={6} className="homeIntro">
           <animated.div style={animatedTexts[0]}>
             <Typography variant="h2" gutterBottom>
-              <Translate>Hello! I am</Translate>
+              <Translate>Welcome! I am</Translate>
               <span className="intro__name"> {siteConfig.title}</span>
               {/* <Typography variant="body2">
                 <span>{siteConfig.tagline}</span>
@@ -58,10 +58,9 @@ function Home() {
           <animated.div style={animatedTexts[1]}>
             <Typography variant="body1">
               <Translate>
-                An experienced DevOps engineer with solid skills in supporting,
+                An experienced Developer with solid skills in supporting,
                 automating, and optimizing mission critical deployments.
-                Proficient with various DevOps tools like Terraform, Jenkins,
-                Docker and Kubernetes.
+                Experience in DevOps tools like Azure, Jenkins, Grafana, Data Dog between others.
               </Translate>{" "}
             </Typography>
           </animated.div>
@@ -71,8 +70,7 @@ function Home() {
               <Translate>My Skills:</Translate>
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Terraform, Docker, Kubernetes, AWS, JavaScript, Python, Azure,
-              etc.
+              .NetFramework and .Net Core with C#, SQL Server, Oracle, JavaScript, Html, Css, VueJs, Rest Api, DevExpress, Azure, etc.
             </Typography>
           </animated.div>
           &nbsp;
@@ -124,13 +122,8 @@ function SocialLinks({ animatedProps, ...props }) {
           </Typography>
         </Grid>
         <Grid item>
-          <a href="https://www.linkedin.com/in/hcq/">
+          <a href="https://www.linkedin.com/in/rafael-brand%C3%A3o-825494111/">
             <FontAwesomeIcon icon={faLinkedin} />
-          </a>
-        </Grid>
-        <Grid item>
-          <a href="https://github.com/HaochenQ">
-            <FontAwesomeIcon icon={faGithub} />
           </a>
         </Grid>
       </Grid>

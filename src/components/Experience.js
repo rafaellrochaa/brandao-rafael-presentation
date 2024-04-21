@@ -2,57 +2,53 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
 import Translate from "@docusaurus/Translate";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 const experience = [
   {
-    company: "University of Melbourne",
-    position: "Master of Information Technology",
-    date: "July 2018 - December 2020 ",
+    logo: "./img/btg-logo.png",
+    logoClass:"logo-dimension-df",
+    company: "Btg Pactual",
+    position: "Senior systems analyst",
+    date: "April 2022 - April 2024",
     desc: {
-      1: "Gained knowledge about fundamentals of the fields of Information Technology and Computer Science.",
-      2: "Formed a deep understanding of modern cloud-driven network architecture with hands-on experience.",
-      3: "Acquired a comprehensive understanding of the integration of Machine Learning models and modern Web Development by finishing the graduation project.",
+      1: "bla bla bla experienced",
+      2: "bla bla bla experienced",
+      3: "bla bla bla experienced",
     },
   },
   {
-    company: "University of North Carolina",
-    position: "Exchange Graduate",
-    date: "August 2019 - December 2019 ",
+    logo:"./img/credit-suisse-logo.png",
+    logoClass:"logo-dimension-df",
+    company: "Credit Suisse",
+    position: "Pleno systems analyst",
+    date: "January 2020 - April 2022 ",
     desc: {
-      1: "Learnt modern web development and got familar with several modern web framworks.",
-      2: "Refined web development skills with hands on projects",
-      3: "Excelled in user experience and user interfaces.",
+      1: "bla bla bla experienced",
+      2: "bla bla bla experienced",
+      3: "bla bla bla experienced",
     },
   },
   {
-    company: "Psych Press",
-    position: "Front-End Developer Intern",
-    date: "March 2020 - July 2020 ",
+    logo:"./img/logo-agilus.svg",
+    logoClass:"logo-dimension-lg",
+    company: "Agilus informática",
+    position: "Pleno systems analyst",
+    date: "May 2013 - November 2021",
     desc: {
-      1: "Implemented reusable React components which helped save development time and budget for the development team.",
-      2: "Collaborated with product team members to implement new website features to improve the customers’ experience.",
-      3: "Gained experience by working in the agile/scrum development environment with frequently changing requirements and actively participating in scrum meetings and reviews.",
-    },
-  },
-  {
-    company: "Wicresoft",
-    position: "Azure Cloud Engineer",
-    date: "Mid 2021 - Jan 2023 ",
-    desc: {
-      1: "Developed a comprehensive understanding of the structure of Azure Services such as App Service, Azure VMs, and Azure SQL Database.",
-      2: "Helped numerous customers resolve the issues and difficulties they encountered using Azure Services throughout the development, CI/CD, and deployment phases.",
-      3: "Provided suggestions and recommendations to help customers to migrate and build robust Cloud-Native apps. ",
-      4: "Boosted customers' confidence and satisfaction towards Azure by effectively connecting the customers with the Product Group in terms of product limitations and emerging issues. ",
+      1: "bla bla bla experienced",
+      2: "bla bla bla experienced",
+      3: "bla bla bla experienced",
     },
   },
 ];
 function Experience() {
   const [value, setValue] = useState(0);
-  const { company, position, date, desc } = experience[value];
+  const { company, position, logo, logoClass, date, desc } = experience[value];
 
   return (
     <section className="experience">
       <h2 className="experience-title">
-        <Translate>Experience</Translate>
+        <Translate>Last Experiences</Translate>
       </h2>
       <div className="underline"></div>
       <div className="experiences-center">
@@ -70,8 +66,9 @@ function Experience() {
           })}
         </div>
         <article className="experience-info">
-          <h3>{position}</h3>
           <h4>{company}</h4>
+          <p class={logoClass}><img src={logo}/></p>
+          <h3>{position}</h3>
           <p className="experience-date">{date}</p>
           {Object.keys(desc).map((key, index) => {
             return (
