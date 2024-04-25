@@ -46,7 +46,7 @@ function Experience() {
   const { company, position, logo, logoClass, date, desc } = experience[value];
 
   return (
-    <section className="experience">
+    <section className="experience" id="xp">
       <h2 className="experience-title">
         <Translate>Last Experiences</Translate>
       </h2>

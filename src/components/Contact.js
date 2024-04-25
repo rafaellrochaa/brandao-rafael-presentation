@@ -25,7 +25,7 @@ const Contact = () => {
   }, [state]);
 
   return (
-    <section className="contact-page">
+    <section className="contact-page" id="contact">
       <ToastContainer
         position="top-right"
         autoClose={5000}
