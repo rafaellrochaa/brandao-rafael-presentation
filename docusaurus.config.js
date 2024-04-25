@@ -13,7 +13,7 @@ module.exports = {
   },
   //onBrokenLinks: "throw",
   //onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico",
+  favicon: "img/lg_light.ico",
   // Usually your GitHub org/user name.
   projectName: "Portifolio-rafael-brandao", // Usually your repo name.
   stylesheets: ["https://fonts.font.im/css?family=Raleway:500,700"],
