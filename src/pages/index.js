@@ -31,7 +31,6 @@ function Home() {
   const { siteConfig, i18n } = useDocusaurusContext();
 
   // const { siteConfig = {} } = context;
-  console.log(i18n.currentLocale);
   const animatedHero = useSpring({
     opacity: 1,
     transform: "translateX(0)",

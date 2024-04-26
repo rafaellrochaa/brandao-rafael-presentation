@@ -67,7 +67,7 @@ function Experience() {
         </div>
         <article className="experience-info">
           <h4>{company}</h4>
-          <p class={logoClass}><img src={logo}/></p>
+          <p className={logoClass}><img src={logo}/></p>
           <h3><Translate>{position}</Translate></h3>
           <p className="experience-date"><Translate>{date}</Translate></p>
           {Object.keys(desc).map((key, index) => {
