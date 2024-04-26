@@ -10,9 +10,10 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTrail, animated, useSpring } from "react-spring";
 import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
-import resume from "../../static/files/resume.pdf";
-import Project from "../components/Project";
-import Projects from "../components/Projects";
+import resumeEn from "../../static/files/resume_en.pdf";
+import resumePt from "../../static/files/resume_pt.pdf";
+// import Project from "../components/Project";
+// import Projects from "../components/Projects";
 import Contact from "../components/Contact";
 import Experience from "../components/Experience";
 function Home() {
@@ -80,9 +81,21 @@ function Home() {
               color="primary"
               variant="outlined"
               size="small"
-              href={resume}
+              href={resumeEn}
             >
-              <Translate>My Resume</Translate>
+              <Translate>My Resume (english)</Translate>
+            </Button>
+          </animated.p>
+
+            <animated.p style={animatedTexts[3]}>
+            <Button
+              style={{ textTransform: "none" }}
+              color="primary"
+              variant="outlined"
+              size="small"
+              href={resumePt}
+            >
+              <Translate>My Resume (portuguese)</Translate>
             </Button>
           </animated.p>
           <SocialLinks animatedProps={animatedTexts[4]} />
@@ -101,9 +114,9 @@ function Home() {
         <Experience />
       </Grid>
       {/* Projects section */}
-      <Grid>
+      {/* <Grid>
         <Projects />
-      </Grid>
+      </Grid> */}
       {/* Contact form */}
       <Grid>
         <Contact />

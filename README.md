@@ -1,5 +1,5 @@
 # My Website
 
-Welcom to my website [haochenqi.com](https://haochenqi.com)
+Welcom to my website [portifolio-brandao.com.br](https://portifolio-brandao.com.br)
 
-On my website, you can check my recent projects, read my blogs and contact me!
+On my website, you can check some informations about my job profile and contact me!

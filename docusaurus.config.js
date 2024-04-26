@@ -27,7 +27,7 @@ module.exports = {
       items: [
         { type: "localeDropdown", position: "right" },
         { to: "#xp", label: "Last Experiences", position: "left"},
-        { to: "#projects", label: "Some Projects", position: "left"},
+        // { to: "#projects", label: "Some Projects", position: "left"},
         { to: "#contact", label: "Contact me", position: "left"},
       ],
     },
