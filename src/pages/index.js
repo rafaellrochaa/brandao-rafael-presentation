@@ -6,20 +6,33 @@ import Link from "@docusaurus/Link";
 import Translate, { translate } from "@docusaurus/Translate";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-// import styles from "./styles.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTrail, animated, useSpring } from "react-spring";
 import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
 import resumeEn from "../../static/files/resume_en.pdf";
 import resumePt from "../../static/files/resume_pt.pdf";
-// import Project from "../components/Project";
-// import Projects from "../components/Projects";
 import Contact from "../components/Contact";
 import Experience from "../components/Experience";
-function Home() {
-  const context = useDocusaurusContext();
-  const { siteConfig = {} } = context;
 
+
+function GetResumePath(locale) {
+    switch(locale)
+    {
+      case "pt-br":
+          return resumePt;
+      case "en":
+        return resumeEn;
+
+      default: resumeEn;
+    }
+}
+
+function Home() {
+  // const context = useDocusaurusContext();
+  const { siteConfig, i18n } = useDocusaurusContext();
+
+  // const { siteConfig = {} } = context;
+  console.log(i18n.currentLocale);
   const animatedHero = useSpring({
     opacity: 1,
     transform: "translateX(0)",
@@ -81,7 +94,7 @@ function Home() {
               color="primary"
               variant="outlined"
               size="small"
-              href={resumeEn}
+              href={GetResumePath(i18n.currentLocale)}
             >
               <Translate>My Resume</Translate>
             </Button>
