@@ -1,0 +1,18 @@
+{
+  "title": {
+    "message": "Rafael Brandão",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Last Experiences": {
+    "message": "Últimas Experiências",
+    "description": "Navbar item with label Last Experiences"
+  },
+  "item.label.Contact me": {
+    "message": "Entre em contato comigo",
+    "description": "Navbar item with label Contact me"
+  }
+}

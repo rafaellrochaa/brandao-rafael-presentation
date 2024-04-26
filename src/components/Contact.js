@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import Translate from "@docusaurus/Translate";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import {translate} from '@docusaurus/Translate';
 
 const Contact = () => {
   const {
@@ -46,7 +47,10 @@ const Contact = () => {
             <input
               type="text"
               name="name"
-              placeholder="name"
+              placeholder={
+                translate({
+                  message: 'NAME'
+                })}
               className="form-control"
             />
             <input
@@ -63,7 +67,10 @@ const Contact = () => {
             <textarea
               name="message"
               rows="5"
-              placeholder="message"
+              placeholder={
+                translate({
+                  message: 'MESSAGE'
+                })}
               className="form-control"
             ></textarea>
             <button

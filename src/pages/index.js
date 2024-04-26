@@ -83,19 +83,7 @@ function Home() {
               size="small"
               href={resumeEn}
             >
-              <Translate>My Resume (english)</Translate>
-            </Button>
-          </animated.p>
-
-            <animated.p style={animatedTexts[3]}>
-            <Button
-              style={{ textTransform: "none" }}
-              color="primary"
-              variant="outlined"
-              size="small"
-              href={resumePt}
-            >
-              <Translate>My Resume (portuguese)</Translate>
+              <Translate>My Resume</Translate>
             </Button>
           </animated.p>
           <SocialLinks animatedProps={animatedTexts[4]} />

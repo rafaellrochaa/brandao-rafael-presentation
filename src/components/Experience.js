@@ -8,7 +8,7 @@ const experience = [
     logo: "./img/btg-logo.png",
     logoClass:"logo-dimension-df",
     company: "Btg Pactual",
-    position: "Senior systems analyst",
+    position: "Senior Systems Analyst, Equities & Derivatives",
     date: "April-2022 to April-2024",
     desc: {
       1: "Responsible for B3 files reading system (SMPISO standard)",
@@ -20,8 +20,8 @@ const experience = [
     logo:"./img/credit-suisse-logo.png",
     logoClass:"logo-dimension-df",
     company: "Credit Suisse (UBS)",
-    position: "Pleno systems analyst",
-    date: "January-2020 to April-2022 ",
+    position: "Systems Analyst, Onshore Investment Funds",
+    date: "January-2020 to April-2022",
     desc: {
       1: "Responsible for accounting system migration",
       2: "Support and integration with treasury, compliance and middle teams",
@@ -32,7 +32,7 @@ const experience = [
     logo:"./img/logo-agilus.svg",
     logoClass:"logo-dimension-lg",
     company: "Agilus informática",
-    position: "Pleno systems analyst",
+    position: "Net and Javascript developer",
     date: "May-2013 to November-2021",
     desc: {
       1: "Creation of solutions for data processing (several sources)",
@@ -68,8 +68,8 @@ function Experience() {
         <article className="experience-info">
           <h4>{company}</h4>
           <p class={logoClass}><img src={logo}/></p>
-          <h3>{position}</h3>
-          <p className="experience-date">{date}</p>
+          <h3><Translate>{position}</Translate></h3>
+          <p className="experience-date"><Translate>{date}</Translate></p>
           {Object.keys(desc).map((key, index) => {
             return (
               <div key={index} className="experience-desc">
@@ -77,7 +77,7 @@ function Experience() {
                   icon={faAngleDoubleRight}
                   className="experience-icon"
                 ></FontAwesomeIcon>
-                <p>{desc[key]}</p>
+                <p><Translate>{desc[key]}</Translate></p>
               </div>
             );
           })}

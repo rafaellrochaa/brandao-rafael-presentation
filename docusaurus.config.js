@@ -70,12 +70,12 @@ module.exports = {
   ],
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "pr-br"],
+    locales: ["en", "pt-br"],
     localeConfigs: {
       en: {
         label: "English",
       },
-      "pr-br": {
+      "pt-br": {
         label: "Português",
       },
     },
