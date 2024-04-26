@@ -4,7 +4,7 @@ module.exports = {
   tagline: "Be aware to good and bad things why everything teach us something and knowledge is precious",
   //disableTitleTagline: true,
   //titleDelimiter: "*",
-  url: "https://portifolio-brandao.com.br/",
+  url: "https://presentation-brandao-rafael.com.br/",
   baseUrl: "/",
   customFields: {
     // Put your custom environment here
@@ -15,7 +15,7 @@ module.exports = {
   //onBrokenMarkdownLinks: "warn",
   favicon: "img/lg_light.ico",
   // Usually your GitHub org/user name.
-  projectName: "Portifolio-rafael-brandao", // Usually your repo name.
+  projectName: "Presentation-Brandao-Rafael", // Usually your repo name.
   stylesheets: ["https://fonts.font.im/css?family=Raleway:500,700"],
   themeConfig: {
     navbar: {
@@ -28,7 +28,7 @@ module.exports = {
         { type: "localeDropdown", position: "right" },
         { to: "#xp", label: "Last Experiences", position: "left"},
         // { to: "#projects", label: "Some Projects", position: "left"},
-        { to: "#contact", label: "Contact me", position: "left"},
+        // { to: "#contact", label: "Contact me", position: "left"},
       ],
     },
     footer: {

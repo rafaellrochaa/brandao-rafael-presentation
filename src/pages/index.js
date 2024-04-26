@@ -11,9 +11,8 @@ import { useTrail, animated, useSpring } from "react-spring";
 import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
 import resumeEn from "../../static/files/resume_en.pdf";
 import resumePt from "../../static/files/resume_pt.pdf";
-import Contact from "../components/Contact";
+// import Contact from "../components/Contact";
 import Experience from "../components/Experience";
-
 
 function GetResumePath(locale) {
     switch(locale)
@@ -54,7 +53,7 @@ function Home() {
   return (
     <Layout
       //title={` ${siteConfig.title}`}
-      title={`Portifolio`}
+      title={`Presentation`}
       description="Description will go into a meta tag in <head />"
     >
       <Grid container style={{ padding: "5%" }} className="hero">
@@ -72,9 +71,7 @@ function Home() {
           <animated.div style={animatedTexts[1]}>
             <Typography variant="body1">
               <Translate>
-                An experienced Developer with solid skills in supporting,
-                automating, and optimizing mission critical deployments.
-                Experience in DevOps tools like Azure, Jenkins, Grafana, Data Dog between others.
+              An experienced developer with solid knowledge in C#, .Net platform and enthusiast in the world of multi cloud and dev ops. Experience in support, automation and performance optimization in projects, in addition to leading some projects and planning improvements in meetings with other areas.
               </Translate>{" "}
             </Typography>
           </animated.div>
@@ -119,9 +116,9 @@ function Home() {
         <Projects />
       </Grid> */}
       {/* Contact form */}
-      <Grid>
+      {/* <Grid>
         <Contact />
-      </Grid>
+      </Grid> */}
     </Layout>
   );
 }
