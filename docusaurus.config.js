@@ -4,18 +4,20 @@ module.exports = {
   tagline: "Be aware to good and bad things why everything teach us something and knowledge is precious",
   //disableTitleTagline: true,
   //titleDelimiter: "*",
-  url: "https://presentation-brandao-rafael.com.br/",
-  baseUrl: "/",
+  url: "https://github.com/",
+  baseUrl: "/brandao-rafael-presentation/",
+  organizationName: "rafaellrochaa",
+  deploymentBranch: "git",
   customFields: {
     // Put your custom environment here
     // formAPI: process.env.FORM_SPREE,
     // test: "test",
   },
-  //onBrokenLinks: "throw",
-  //onBrokenMarkdownLinks: "warn",
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
   favicon: "img/lg_light.ico",
   // Usually your GitHub org/user name.
-  projectName: "Presentation-Brandao-Rafael", // Usually your repo name.
+  projectName: "brandao-rafael-presentation", // Usually your repo name.
   stylesheets: ["https://fonts.font.im/css?family=Raleway:500,700"],
   themeConfig: {
     navbar: {
