@@ -1,0 +1,54 @@
+{
+  "permalink": "/blog/protect-app-service-from-ddos-attacks",
+  "source": "@site/blog/2022-10-17-how-to-mitigate-DDoS-for-app-service.md",
+  "title": "How to Protect Your Azure App Service App from DDoS Attacks",
+  "description": "banner-ddos",
+  "date": "2022-10-17T00:00:00.000Z",
+  "formattedDate": "October 17, 2022",
+  "tags": [
+    {
+      "label": "Azure App Service",
+      "permalink": "/blog/tags/azure-app-service"
+    },
+    {
+      "label": "DDoS",
+      "permalink": "/blog/tags/d-do-s"
+    },
+    {
+      "label": "Application Gateway",
+      "permalink": "/blog/tags/application-gateway"
+    },
+    {
+      "label": "WAF",
+      "permalink": "/blog/tags/waf"
+    }
+  ],
+  "readingTime": 4.805,
+  "hasTruncateMarker": true,
+  "authors": [
+    {
+      "name": "Haochen Qi",
+      "title": "Full Stack Developer",
+      "url": "https://github.com/HaochenQ",
+      "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+    }
+  ],
+  "frontMatter": {
+    "slug": "protect-app-service-from-ddos-attacks",
+    "title": "How to Protect Your Azure App Service App from DDoS Attacks",
+    "author": "Haochen Qi",
+    "author_title": "Full Stack Developer",
+    "author_url": "https://github.com/HaochenQ",
+    "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+    "tags": [
+      "Azure App Service",
+      "DDoS",
+      "Application Gateway",
+      "WAF"
+    ]
+  },
+  "nextItem": {
+    "title": "Map your Custom Domain to Your App Service App",
+    "permalink": "/blog/azure-app-service-custom-domain"
+  }
+}

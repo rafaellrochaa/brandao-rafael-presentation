@@ -1,0 +1,27 @@
+{
+  "unversionedId": "doc2",
+  "id": "doc2",
+  "title": "Document Number 2",
+  "description": "This is a link to another document. This is a link to an external page.",
+  "source": "@site/docs/doc2.md",
+  "sourceDirName": ".",
+  "slug": "/doc2",
+  "permalink": "/brandao-rafael-presentation/pt-br/docs/doc2",
+  "draft": false,
+  "editUrl": "https://github.com/facebook/docusaurus/edit/master/website/docs/doc2.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "doc2",
+    "title": "Document Number 2"
+  },
+  "sidebar": "someSidebar",
+  "previous": {
+    "title": "Style Guide",
+    "permalink": "/brandao-rafael-presentation/pt-br/docs/"
+  },
+  "next": {
+    "title": "This is Document Number 3",
+    "permalink": "/brandao-rafael-presentation/pt-br/docs/doc3"
+  }
+}

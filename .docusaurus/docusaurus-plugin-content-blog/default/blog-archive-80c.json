@@ -1,0 +1,628 @@
+{
+  "blogPosts": [
+    {
+      "id": "protect-app-service-from-ddos-attacks",
+      "metadata": {
+        "permalink": "/blog/protect-app-service-from-ddos-attacks",
+        "source": "@site/blog/2022-10-17-how-to-mitigate-DDoS-for-app-service.md",
+        "title": "How to Protect Your Azure App Service App from DDoS Attacks",
+        "description": "banner-ddos",
+        "date": "2022-10-17T00:00:00.000Z",
+        "formattedDate": "October 17, 2022",
+        "tags": [
+          {
+            "label": "Azure App Service",
+            "permalink": "/blog/tags/azure-app-service"
+          },
+          {
+            "label": "DDoS",
+            "permalink": "/blog/tags/d-do-s"
+          },
+          {
+            "label": "Application Gateway",
+            "permalink": "/blog/tags/application-gateway"
+          },
+          {
+            "label": "WAF",
+            "permalink": "/blog/tags/waf"
+          }
+        ],
+        "readingTime": 4.805,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Full Stack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "protect-app-service-from-ddos-attacks",
+          "title": "How to Protect Your Azure App Service App from DDoS Attacks",
+          "author": "Haochen Qi",
+          "author_title": "Full Stack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "Azure App Service",
+            "DDoS",
+            "Application Gateway",
+            "WAF"
+          ]
+        },
+        "nextItem": {
+          "title": "Map your Custom Domain to Your App Service App",
+          "permalink": "/blog/azure-app-service-custom-domain"
+        }
+      },
+      "content": "![banner-ddos](/img/DDoS.jpg)\n\nAzure App Service is a PaaS offering and its components, including Azure VMs, storage, network connections, web frameworks, management and integration features, are actively secured and hardened. It has a basic level of DDoS protection.\n\nHowever, this basic layer of protection can be limited when facing large-scale attacks.\n\n<!--truncate-->\n\n## What is DDoS\n\nDistributed denial of Service (DDoS) is a common attack towards a web application to exhaust its resources with a flood of traffic. As a result, the web application will exhibit as unavaiable to it legitmate users.\n\nYou can identify a DDoS attack with the below features[1]:\n\n- Suspicious amounts of traffic originating from a single IP address or IP range\n- A flood of traffic from users who share a single behavioral profile, such as device type, geolocation, or web browser version\n- An unexplained surge in requests to a single page or endpoint\n- Odd traffic patterns such as spikes at odd hours of the day or patterns that appear to be unnatural (e.g. a spike every 10 minutes)\n\n## Dynamic IP Restriction\n\nIf you are using App Service Windows, you can make use of Dynamic IP Restriction(DIPR) feature of IIS(Internet Information Service) webserver. You can add an extension from Azure Portal called **Dynamic IP Restriction for App Services**. With this extension, you can define blocking rules on IPs based on their accessing patterns.\n\n- The number of concurrent requests made.\n- The number of requests made in certain interval of time.\n  ![DIPR](/img/DIPR.jpg)\n  ![DIPR](/img/gui-DIPR.jpg)\n\nThis extension will create special configuration file **applicationHost.xdt** in C:\\home\\site based on your customized rules. For more information about the usage of this extension, please refer to [Dynamic IP Restriction for App Services](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/dynamic-ip-restriction-for-app-services/ba-p/1150049).\n\n## Azure DDoS Protection Standard\n\nAnother option is to purchase an Azure DDoS Standard plan and configure it with Application Gateway WAF or Azure Front Door WAF. It is worth mentioning that Azure DDoS Protection Standard(Metwork) only has a fixed monthly bill of $2,944 (as of October 2022). There is also a IP Protection plan will be in public preview soon.\n\nTo use this service, your App Service app needs to be behind of a WAF enable load balancing service like Application Gateway.\n\n### Integrate Azure App Service app with Application Gateway\n\nFirst of all, we need to create a Application Gateway with WAF enabled [Quickstart: Direct web traffic with Azure Application Gateway - Azure portal](https://learn.microsoft.com/en-us/azure/application-gateway/quick-create-portal). To integrare the Application Gateway with App Service, there two options.\n\n- The first option makes use of a custom domain on both [Application Gateway and the App Service in the backend][3].\n- The second option is to have Application Gateway access App Service using its default domain, suffixed as \".azurewebsites.net\".\n\nGenerally, we all have a custom domain mapped to our App Service app, so we choose the first option.\n\n#### DNS Configuration\n\nIn terms of the DNS settings, we need to add a CNAME or A record at the DNS provider and map our custom domain to the Application Gateway (Default Domain or Public IP address.) If you would like to use a CNAME record, you need to go to the App GW Public IP on Azure Portal and set up a DNS name lable for this IP. After which, your IP will has a name like yourcustomname.region.cloudapp.azure.com. ![Public IP](/img/publicIP.jpg)\n\nIf you have configured the custom domain directly for your App Service before, remeber to remove your old DNS records. The DNS configuration for the custom domain will be directed towards Application Gateway.\n\n#### TLS bindings\n\nBecause we need to use the certificate at both App Service side and the Application Gateway side, the free App Service managed certificate would not meet the needs. You need to purchase a certificate for your custom domain and generate a PFX version for the later usage. After acquiring the PFX version of the certificate, upload it to Azure App Service at **Azure Portal >> TLS/SSL settings >> Private Key Certificates (.pfx) >> Upload Certificate**. If you purchased your certificate from App Service, you can choose **Import App Service Certificate**, dowload the certificate from KeyVault and generate a PFX version. You can follow this [tutorial](https://dotnetdevlife.wordpress.com/2019/06/06/export-azure-app-service-certificate-upload-to-azure-app-service-website/#:~:text=1.%20Go%20to%20App%20Service%20Certificate%20in%20Azure,NOTE%3A%20this%20pfx%20file%20has%20empty%20password%205.) to achieve this.\n\n#### Configure your Application Gateway\n\nNow we need to configure your Application gateway. We need to create a backend pool and set our App Service as the backend target. After which, we need to create an HTTPS Backend setting and be sure to choose No for **Override with new host name**. You shoule also create a Custom probe and use your custom domain as the Host and the HTTPS settings we just created.\n![backend setting](/img/backend-setting.jpg)\n![health probe](/img/health-probe.jpg)\n\nThe we need to create a listener and upload the PFX certificate you created in the last step and write your custom domain in Host name. After configuring the listener, create a new rule to connect the listener and the backend pool.\n![listener](/img/listener.jpg)\n\nIf you have configured the Application Geteway properly, now when you visit your app with the custom domain, you should be using the Application Gateway. You can now go to the Access Restriction of your App and only allow the traffic from the subnet of the virtual network(VNET) where your Application Gateway resides in.\n\n### Enable the DDoS Protection\n\nThe Last steps is to create a DDoS Protection plan and enable DDoS protection for the VNET where your Application gateway is. Please refer to the [Quickstart: Create and configure Azure DDoS Network Protection using the Azure portal](https://learn.microsoft.com/en-us/azure/ddos-protection/manage-ddos-protection) for detailed steps.\n\n## Summary\n\nIn this article, we have learned two ways on how to protect your App Service apps from DDoS sttacks. The first one is using Dynamic IP restriction and the second one is to leverage Azure DDoS Protection Plan.\n\nReference:<br/>\n[1] https://www.cloudflare.com/learning/ddos/what-is-a-ddos-attack/ <br/>\n[2] https://learn.microsoft.com/en-us/azure/app-service/overview-security<br/>\n[3] https://learn.microsoft.com/en-us/azure/application-gateway/configure-web-app?tabs=customdomain%2Cazure-portal"
+    },
+    {
+      "id": "azure-app-service-custom-domain",
+      "metadata": {
+        "permalink": "/blog/azure-app-service-custom-domain",
+        "source": "@site/blog/2022-06-01-custom-domain-on-app-service.md",
+        "title": "Map your Custom Domain to Your App Service App",
+        "description": "azure-map-custom-domain",
+        "date": "2022-06-01T00:00:00.000Z",
+        "formattedDate": "June 1, 2022",
+        "tags": [
+          {
+            "label": "Azure App Service",
+            "permalink": "/blog/tags/azure-app-service"
+          },
+          {
+            "label": "Custom Domain",
+            "permalink": "/blog/tags/custom-domain"
+          },
+          {
+            "label": "TLS/SSL Binding",
+            "permalink": "/blog/tags/tls-ssl-binding"
+          },
+          {
+            "label": "Certificate",
+            "permalink": "/blog/tags/certificate"
+          },
+          {
+            "label": "HTTPS",
+            "permalink": "/blog/tags/https"
+          }
+        ],
+        "readingTime": 2.46,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Full Stack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "azure-app-service-custom-domain",
+          "title": "Map your Custom Domain to Your App Service App",
+          "author": "Haochen Qi",
+          "author_title": "Full Stack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "Azure App Service",
+            "Custom Domain",
+            "TLS/SSL Binding",
+            "Certificate",
+            "HTTPS"
+          ]
+        },
+        "prevItem": {
+          "title": "How to Protect Your Azure App Service App from DDoS Attacks",
+          "permalink": "/blog/protect-app-service-from-ddos-attacks"
+        },
+        "nextItem": {
+          "title": "Azure Blob Functions's Re-triggering Issue",
+          "permalink": "/blog/azure-blob-function-retriggering"
+        }
+      },
+      "content": "![azure-map-custom-domain](/img/add-custom-domain.jpg)\n\nAzure App Service provides a unique default FQDN for every App Service App like myapp.azurewebsites.net. However, we can also map our own domain to App Service App. Custom domain mapping feature is only supported by **paid plans**, while custom TLS/SSL binding is only supported by Plans higher than **Basic**. For more information about App Service Plan, see [App Service Pricing](https://azure.microsoft.com/en-us/pricing/details/app-service/windows/).\n\n<!--truncate-->\n\n## Purchase a Domain\n\nThe very first step is to purchase your domain. You can buy your domain at App Service or any other domain registrar like Namecheap, GoDaddy, Domain and etc.\n\n## Verify Your Domain Ownership and Add DNS Record\n\nYou need to verify the ownership by adding the App Service Custom Domain Verification ID as a TXT record at your domain registrar. You can find this ID at Azure Portal >> Custom Domain. If you are going to map a root domain to your App Service App, configure the host/name as **asuid**, other wise **asuid.subdomain**.\n![azure-map-custom-domain](/img/Azure-portal-custom-domain.png)\n\nTo add this DNS record, you need to go to the dashboard of your domain provider and find DNS record management section. The name for this section can vary for different providers. For example, you can find this at **Advanced DNS** in Namecheap dashboard Domain List >> Advanced DNS.![namecheap-dns-management](/img/namecheap1.png)\n\nAdding domain verification IDs to your custom domain can prevent dangling DNS entries and help to avoid subdomain takeovers. For custom domains you previously configured without this verification ID, you should protect them from the same risk by adding the verification ID to your DNS record. For more information on this common high-severity threat, see [Subdomain takeover](https://learn.microsoft.com/en-us/azure/security/fundamentals/subdomain-takeover).\n\nThe next step is to create DNS records. You can choose A record to map the root domain to your App Service or CNAME to map a subdomain.\n\n## Add Your Custom Domain to Azure App Service\n\nGo back to Azure Portal >> Custom Domains and click \"Add Custom domain\" to validate. If your domain is available and you have added the TXT record, you will see a screen like below:![domain-validation](/img/domain-validation.jpg)\n\nClick \"Add Custom domain\" to add the verified domain.\n\n## Create a TLS Binding to Use HTTPS\n\nNow you can visit your site with the domain you just added. However, you can only use HTTP because no certificate is added to this custom domain.\n\nLuckily, Azure App Service provides free certificates for Azure apps known as Azure App Service Managed certificates which allow us to add the TLS binding with few clicks.\n\nTo use Azure App Service Managed Certificate, go to Azure Portal >> TLS/SSL settings. Click Private Key Certificate then choose **Create App Service Managed Certificate** to generate a free certificate for your custom domain.\n\nAfter your certificate is generated, go back to Custom domains page and add the certificate as a binding. ![tls binding](/img/tls.jpg)\n\n## Summary\n\nIn a summary, we can add our custom domains to Azure App Service apps and create TLS bindings with free App Service managed certificates to enable HTTPS."
+    },
+    {
+      "id": "azure-blob-function-retriggering",
+      "metadata": {
+        "permalink": "/blog/azure-blob-function-retriggering",
+        "source": "@site/blog/2022-01-06-understand-azure-blob-function.md",
+        "title": "Azure Blob Functions's Re-triggering Issue",
+        "description": "azure-functions",
+        "date": "2022-01-06T00:00:00.000Z",
+        "formattedDate": "January 6, 2022",
+        "tags": [
+          {
+            "label": "Azure App Service",
+            "permalink": "/blog/tags/azure-app-service"
+          },
+          {
+            "label": "Blob Function",
+            "permalink": "/blog/tags/blob-function"
+          },
+          {
+            "label": "Azure Functions",
+            "permalink": "/blog/tags/azure-functions"
+          },
+          {
+            "label": "Paas",
+            "permalink": "/blog/tags/paas"
+          }
+        ],
+        "readingTime": 3.14,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Full Stack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "azure-blob-function-retriggering",
+          "title": "Azure Blob Functions's Re-triggering Issue",
+          "author": "Haochen Qi",
+          "author_title": "Full Stack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "Azure App Service",
+            "Blob Function",
+            "Azure Functions",
+            "Paas"
+          ]
+        },
+        "prevItem": {
+          "title": "Map your Custom Domain to Your App Service App",
+          "permalink": "/blog/azure-app-service-custom-domain"
+        },
+        "nextItem": {
+          "title": "Understanding This, Bind, Call and Apply in JavaScript",
+          "permalink": "/blog/understand-this-in-one-article"
+        }
+      },
+      "content": "![azure-functions](/img/Azure_Functions.png)\n\nAzure Functions is an event-driven platform as a service provided by Microsoft Azure with which developers can focus less on infrastructure level complexity. Function app running on a consumption plan or an elastic plan will be charged per execution.\n\nSome of you may have observed that your old blobs in a blob container re-triggered your blob function app even if you didn't modify them which caused extra cost, especially when your Azure function is connected to some other cost-intensive services.\n\nIn this blog, let's discuss the possible reasons for this blob function app anomaly.\n\n<!--truncate-->\n\n## How does Blob trigger function work?\n\nBefore digging into this issue, we need to understand how does azure blob function work. You may already know that Azure blob functions are functions integrated with azure blob storage, function apps will get triggered as blob storage data changes. But you may wonder how does the function knows there are changes and what is the way that azure function knows a blob already triggered it?\n\nAzure blob trigger function will poll the blobs in the designated container, polling works as a hybrid between inspecting logs and running periodic container scans. Blobs are scanned in groups of 10,000 at a time with a continuation token used between intervals.\n\n:::caution\n\nIn addition, [storage logs are created on a \"best effort\"](https://docs.microsoft.com/en-us/rest/api/storageservices/About-Storage-Analytics-Logging) basis. There's no guarantee that all events are captured. Under some conditions, logs may be missed.\nIf you require faster or more reliable blob processing, consider creating a [queue message](https://docs.microsoft.com/en-us/azure/storage/queues/storage-dotnet-how-to-use-queues) when you create the blob. Then use a [queue trigger](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue) instead of a blob trigger to process the blob. Another option is to use Event Grid; see the tutorial [Automate resizing uploaded images using Event Grid](https://docs.microsoft.com/en-us/azure/event-grid/resize-images-on-storage-blob-upload-event).\n\n:::\n\nAzure function keeps blob receipts to record the states of blobs. Blob receipts are stored in a container named **azure-webjobs-hosts** in the Azure storage account for your function app (defined by the app setting AzureWebJobsStorage). A blob receipt has the following information:\n\n- The triggered function (`<FUNCTION_APP_NAME>.Functions.<FUNCTION_NAME>`, for example: MyFunctionApp.Functions.CopyBlob)\n- The container name\n- The blob type (`BlockBlob` or `PageBlob`)\n- The blob name\n- The ETag (a blob version identifier, for example: 0x8D1DC6E70A277EF)\n\n## What will cause the old blob re-triggering Azure Function issue?\n\nAfter knowing the underlying mechanism of how the blob azure functions work, it is not hard to speculate the root cause for this issue.\n\nIf your function got re-triggered once, the possible reason might be the receipt got deleted/or updated somehow. However, in most cases, you will find all the old blobs in the container re-triggered your function. To find the cause for this false behavior, you can try to identify the actions performed around the time the issue occurred. You need to check you accidentally delete the whole **azure-webjobs-hosts** container or the virtual folder **blobreceipts** inside this container?\n\nAnother tricky situation is that you may find this all old blobs retriggered function issue after you updated your function name. As I mentioned above, the blob receipts are stored in a virtual folder with the structure of `<FUNCTION_APP_NAME>.Functions.<FUNCTION_NAME>`. After the modification of your function name, your function could not find the receipts that are associated with it anymore, as a result, it will treat all old blobs in your container as new ones which will get your function re-triggered.\n\n## Summary\n\nIn a summary, Azure Blob Function leverages blob receipts to monitor the states of the blobs in your container. If you are facing the issue that old blobs(without any updates/modifications) are re-triggering your function, you can check whether you have accidentally deleted the blob receipts or you have changed the function name in which way your function can not find its associated receipts.\n\n---\n\nReference: [Azure Blob storage trigger for Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-blob-trigger?tabs=csharp)"
+    },
+    {
+      "id": "understand-this-in-one-article",
+      "metadata": {
+        "permalink": "/blog/understand-this-in-one-article",
+        "source": "@site/blog/2021-06-15-Understand-This.md",
+        "title": "Understanding This, Bind, Call and Apply in JavaScript",
+        "description": "question",
+        "date": "2021-06-15T00:00:00.000Z",
+        "formattedDate": "June 15, 2021",
+        "tags": [
+          {
+            "label": "JavaScript",
+            "permalink": "/blog/tags/java-script"
+          },
+          {
+            "label": "Interview Qustions",
+            "permalink": "/blog/tags/interview-qustions"
+          }
+        ],
+        "readingTime": 2.31,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Full Stack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "understand-this-in-one-article",
+          "title": "Understanding This, Bind, Call and Apply in JavaScript",
+          "author": "Haochen Qi",
+          "author_title": "Full Stack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "JavaScript",
+            "Interview Qustions"
+          ]
+        },
+        "prevItem": {
+          "title": "Azure Blob Functions's Re-triggering Issue",
+          "permalink": "/blog/azure-blob-function-retriggering"
+        },
+        "nextItem": {
+          "title": "How to Upload Files to AWS S3 in Node.js?",
+          "permalink": "/blog/upload-files-to-s3-iwth-node"
+        }
+      },
+      "content": "![question](/img/JS-Bind.png)\n\nMany of you may have been asked about **This** keyword in an interview. It is a really important concept in JavaScript yet slightly confusing to new developers. Today let us disscuss **this**, **apply**, **call** and **bind** in JavaScript.\n\n<!--truncate-->\n\n## **This** in JavaScript\n\nNot like other programming languages where this always refers to the current instance of the class, **this** in JavaScript depends on how a function is called. The usage of **apply**, **call** and **bind** methods can determine the value of **this**. Let's use an example to help us understand **this**.\n\n```javascript\nvar test = {\n  func: function () {\n    console.log(this.bar);\n  },\n  prop: 1,\n};\n\nvar func = test.func;\nvar prop = 2;\n\ntest.func(); // 1\nfunc(); // 2\n```\n\nIn the example above, we can see that two ways of calling _func()_ generated different results. The reason is that _test.func()_ ran in the context of _test_ where _this_ refers, whereas the secoond _func_ ran in the global context.\n\n## **Call**, **Apply** and **Bind**\n\nWe use call(), apply() and bind() methods to set the this keyword independent of how the function is called. This is especially useful for the callbacks.\n\nThe call() and apply() methods set the this inside the function and immediately executes that function. The only difference between call() and apply() is that the apply() method accepts an array of arguments instead of comma separated values.\n\n> function.call(thisArg, arg1, agr2, ...)\n\n> function.apply(thisArg, [argumentsArr])\n\nThe code below will help us understand how call() and apply() work:\n\n```javascript\nFunction.prototype.call = (context, ...args) => {\n  context =\n    context === undefined || context === null ? window : Object(context);\n  context.fn = this;\n  const result = context.fn(...args);\n  delete context.fn;\n  return result;\n};\n```\n\n```javascript\nFunction.prototype.apply = (context, args) => {\n  context =\n    context === undefined || context === null ? window : Object(context);\n  context.fn = this;\n  const result = args ? context.fn(...args) : context.fn();\n  delete context.fn;\n  return result;\n};\n```\n\nNot like call() and apply(), the bind() creates a new function and sets the this keyword to the specified object.\n\n> function.bind(thisArg, optionalArguments)\n\n```javascript\nFunction.prototype.myBind = (context, ...args) => {\n  if (typeof this !== \"function\") {\n    throw new TypeError(\"error\");\n  }\n  context =\n    context === undefined || context === null ? window : Object(context);\n  self = this;\n  return (...bindArgs) => {\n    return self.apply(context, [...args, ...bindArgs)])\n};\n```\n\n## Arrow Functions\n\nArrow functions do not have their own **this** binding. Instead, they go up to the next level of execution.\n\nIt can be useful to use the arrow function in cases where you really want this to refer to the outer context. For example, if you had an event listener inside of a class, you would probably want this to refer to some value in the class.\n\n---\n\nReference: [AWS S3 Doc](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this),\n[Medium(JavaScript Fundmentals)](https://blog.bitsrc.io/understanding-call-bind-and-apply-methods-in-javascript-33dbf3217be)"
+    },
+    {
+      "id": "upload-files-to-s3-iwth-node",
+      "metadata": {
+        "permalink": "/blog/upload-files-to-s3-iwth-node",
+        "source": "@site/blog/2021-05-31-upload-files-to-s3-in-node.md",
+        "title": "How to Upload Files to AWS S3 in Node.js?",
+        "description": "question",
+        "date": "2021-05-31T00:00:00.000Z",
+        "formattedDate": "May 31, 2021",
+        "tags": [
+          {
+            "label": "Node.js",
+            "permalink": "/blog/tags/node-js"
+          },
+          {
+            "label": "AWS S3",
+            "permalink": "/blog/tags/aws-s-3"
+          },
+          {
+            "label": "Bucket Operation",
+            "permalink": "/blog/tags/bucket-operation"
+          }
+        ],
+        "readingTime": 4.07,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Full Stack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "upload-files-to-s3-iwth-node",
+          "title": "How to Upload Files to AWS S3 in Node.js?",
+          "author": "Haochen Qi",
+          "author_title": "Full Stack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "Node.js",
+            "AWS S3",
+            "Bucket Operation"
+          ]
+        },
+        "prevItem": {
+          "title": "Understanding This, Bind, Call and Apply in JavaScript",
+          "permalink": "/blog/understand-this-in-one-article"
+        },
+        "nextItem": {
+          "title": "Shallow Copy vs. Deep Copy",
+          "permalink": "/blog/understand-copy-in-js"
+        }
+      },
+      "content": "![question](/img/S3.jpg)\n\n> Amazon Simple Storage Service is storage for the Internet. It is designed to make web-scale computing easier for developers. -- Amazon\n\nSimple Storage Service(S3) is a an object storage service provided by AWS in 2006. S3 provides developers with a distributed data storage service with high scalability, high durability and high availability. The data storage structure of S3 is very simple, which is a flat two-layer structure: one layer is a bucket, and the other layer is a storage object. A bucket is a way to classify data in S3, it is a container for data storage and every object needs to be stored in a certain bucket. It will become a part of the domain name for users to access data, so the name of the bucket must be unique.\n\n<!--truncate-->\n\nOur Node Apps often need to store user data like images, audio files, documents ,etc into somewhere secure and easily accessible instead of on local server. This is when S3 comes in as a perfect option. In this blog, we will go through how to upload your files in AWS s3 buckets.\n\n![question](/img/bucket.png)\n\n## Create a S3 Bucket\n\nIn this section, we will create a bucket on S3 for us to upload files in. To get start, you need to generate AWS Security Key Access Credentials first from your AWS Management console.\n\n![question](/img/IAM.png)\n\nOn the AWS Services panel, find IAM and click to go IAM dashboard. Under the Access Management section, find Users >> Add User.\n![question](/img/IAM-user.png)\nThen follow the steps to create a programmatic access AWS user attached with **AmazonS3FullAccess** policy. _Save your access key ID and secret access key in a secure place as you won't able to check them again._\n![question](/img/s3-permission.png)\n\nNow let us create a bucket with a unique name. Similarly, find S3 On the AWS Services pane. On the dashboard, click **Create bucket** to create a new bucket with proper region and other default settings. After you create a bucket, we need to allow our client application to interact with our bucket. Go to Your Bucket >> Permissions >> Cross-origin resource sharing (CORS). Change the configuration as bellow.\n\n```json\n[\n  {\n    \"AllowedHeaders\": [\"*\"],\n    \"AllowedMethods\": [\"POST\", \"GET\", \"PUT\", \"DELETE\", \"HEAD\"],\n    \"AllowedOrigins\": [\"*\"],\n    \"ExposeHeaders\": []\n  }\n]\n```\n\nNow, We have a bucket up for us to play with. Alternatively, you can also create a bucket with AWS SDK tool. Simply felllow [here](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-creating-buckets.html).\n\n## Create a Simple Node App\n\nNow let us interact with our created bucket. Before we create a S3 instance, make sure to put sensitive data in the environment variables, simply create a .env file and save your data in that file. Here I will use a library called dotenv to handle .env file, it will loads environment variables from a .env file into process.env.\n\n```\nAWS_ACCESS_KEY_ID=Your AWS Access Key ID\nAWS_SECRET_ACCESS_KEY=Your AWS Secret Access Key\nS3_BUCKET=Your Bucket Name\n```\n\nThen let's create a S3 instance after we install all necessary dependencies with:\n\n```\n$ npm i dotenv aws-sdk\n```\n\nCreate a file name with app.js, let's write code in this file.\n\n```javascript\nrequire(\"dotenv\").config();\n\nconst fs = require(\"fs\");\nconst AWS = require(\"aws-sdk\");\n\nconst s3 = new AWS.S3({\n  accessKeyId: process.env.AWS_ACCESS_KEY_ID,\n  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,\n});\n```\n\n## Interact With Our Bucket\n\nWith the S3 instance set up, we can now play with our bucket. We can upload files to our bucket, get all the files in our bucket and delete files.\nBefore we upload the file, we need to read its contents in a buffer. After reading it, we can define the needed parameters for the file upload, such as Bucket, Key, and Body.Let's see the code.\n\n```javascript\n/**\n * Upload files\n **/\nconst uploadToS3 = async (file) => {\n  // Read content from the file\n  const fileContent = fs.readFileSync(file);\n\n  // Setting up S3 upload parameters\n  const params = {\n    Bucket: process.env.S3_BUCKET,\n    Key: \"your_image.jpg\", // File name you want to save as in S3\n    Body: fileContent,\n  };\n\n  // Uploading files to the bucket\n  s3.upload(params, function (err, data) {\n    if (err) {\n      throw err;\n    }\n    console.log(`File uploaded successfully. ${data.Location}`);\n  });\n};\nuploadToS3(\"your_image.jpg\");\n```\n\nIf you want to list all objects in your bucket, you can use S3 **listObjectsV2** function.\n\n```javascript\n/**\n * List all objects in the bucket\n */\ngetlist = async () => {\n  const params = {\n    Bucket: process.env.S3_BUCKET,\n    Delimiter: \"\",\n  };\n  try {\n    const response = await s3.listObjectsV2(params).promise();\n    this.setState({\n      list: response.Contents,\n      fetched: true,\n    });\n    console.log(this.state.list);\n  } catch (err) {\n    this.setState({\n      ifError: true,\n      errorCode: err.code,\n    });\n    console.log(\"S3 ERROR : \" + err.code);\n  }\n};\nconsloe.log(getlist());\n```\n\nNow run your js file to see the result.\n\n```\n$node app.js\n```\n\n## Conclusion\n\nIn this blog, we created simple Node App and interact with our bucket. Nowadays, using a cloud storage service like AWS S3 is a very popular way to reduce storage pressure for servers as well as securly store user data.\n\n---\n\nReference: [AWS S3 Doc](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-creating-buckets.html)"
+    },
+    {
+      "id": "understand-copy-in-js",
+      "metadata": {
+        "permalink": "/blog/understand-copy-in-js",
+        "source": "@site/blog/2021-04-14-copy-in-js.md",
+        "title": "Shallow Copy vs. Deep Copy",
+        "description": "question",
+        "date": "2021-04-14T00:00:00.000Z",
+        "formattedDate": "April 14, 2021",
+        "tags": [
+          {
+            "label": "Javascript",
+            "permalink": "/blog/tags/javascript"
+          },
+          {
+            "label": "Deep Copy",
+            "permalink": "/blog/tags/deep-copy"
+          },
+          {
+            "label": "Shallow Copy",
+            "permalink": "/blog/tags/shallow-copy"
+          }
+        ],
+        "readingTime": 3.475,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Fullstack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "understand-copy-in-js",
+          "title": "Shallow Copy vs. Deep Copy",
+          "author": "Haochen Qi",
+          "author_title": "Fullstack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "Javascript",
+            "Deep Copy",
+            "Shallow Copy"
+          ]
+        },
+        "prevItem": {
+          "title": "How to Upload Files to AWS S3 in Node.js?",
+          "permalink": "/blog/upload-files-to-s3-iwth-node"
+        },
+        "nextItem": {
+          "title": "Django project - A Twitter Like Web APP",
+          "permalink": "/blog/djang0-blog"
+        }
+      },
+      "content": "![question](/img/question.jpg)\nObjects are the basic blocks of JavaScript. An object is a collection of attributes, and an attribute is an association between a key (or name) and a value. Almost all objects in JavaScript are Object instances at the top of the prototype chain.\n\nWhen it comes to copying objects in JavaScript, you need to know whether you need to do a shallow copying or a deep copying. In this article, we will go through these two different ways to copy objects.\n\n<!--truncate-->\n\n## Shallow copy\n\n**Shallow copy**: When using the assignment operator to copy a reference variable to a new reference variable, a shallow copy of the referenced object will be created. In short, a reference variable mainly stores the address of the object it refers to. After assigning the value of the old reference variable to the new reference variable, copy the address stored in the old reference variable to the new reference variable. This means that both the old reference variable and the new reference variable point to the same object in memory. As a result, if the state of the object changes through any reference variable, both will be reflected. Let's see an example:\n\n```javascript\nfunction example() {\n  \"use strict\";\n\n  let obj1 = { a: 0, b: { c: 0 } };\n  let obj2 = Object.assign({}, obj1);\n  console.log(JSON.stringify(obj2)); // { \"a\": 0, \"b\": { \"c\": 0}}\n\n  obj1.a = 1;\n  console.log(JSON.stringify(obj1)); // { \"a\": 1, \"b\": { \"c\": 0}}\n  console.log(JSON.stringify(obj2)); // { \"a\": 0, \"b\": { \"c\": 0}}\n\n  obj2.a = 2;\n  console.log(JSON.stringify(obj1)); // { \"a\": 1, \"b\": { \"c\": 0}}\n  console.log(JSON.stringify(obj2)); // { \"a\": 2, \"b\": { \"c\": 0}}\n\n  obj1.b.c = 3;\n  console.log(JSON.stringify(obj1)); // { \"a\": 1, \"b\": { \"c\": 3}}\n  console.log(JSON.stringify(obj2)); // { \"a\": 2, \"b\": { \"c\": 3}}\n}\n\nexample();\n```\n\nAfter ES6 released, we can also use **spread operator** to shallow copy objects.\n\n```javascript\nfunction example() {\n  let obj1 = { a: 0, b: { c: 0 } };\n  let obj2 = { ...obj1 };\n  console.log(JSON.stringify(obj2)); // { \"a\": 0, \"b\": { \"c\": 0}}\n  obj1.a = 4;\n  obj1.b.c = 4;\n  console.log(JSON.stringify(obj1)); // { \"a\": 4, \"b\": { \"c\": 4}}\n  console.log(JSON.stringify(obj2)); // { \"a\": 0, \"b\": { \"c\": 4}}\n}\n\nexample();\n```\n\n## Deep copy\n\n**Deep copy**: Unlike shallow copy, deep copy copies all members of the old object, allocates a separate memory location for the new object, and then assigns the copied members to the new object. In this way, the two objects are independent of each other, and in the case of any modification to any one object, the other object is not affected. Similarly, if one of the objects is deleted, the other remains in memory. Now, to create a deep copy of the object in JavaScript, we use the JSON.parse() and JSON.stringify() methods. Let us see the example below.\n\n```javascript\nfunction example() {\n  let obj1 = { a: 0, b: { c: 0 } };\n  let obj2 = JSON.parse(JSON.stringify(obj1));\n  obj1.a = 4;\n  obj1.b.c = 4;\n  console.log(JSON.stringify(obj1)); // { \"a\": 4, \"b\": { \"c\": 4}}\n  console.log(JSON.stringify(obj2)); // { \"a\": 0, \"b\": { \"c\": 0}}\n}\n\nexample();\n```\n\n## Use a JavaScript library to deep copy objects\n\nThere are several javascript libraries can provide objects operation utilities like **underscore** and **lodash**. In this article, we will introduce you how to use **lodash** to deep copy objects.\n\nLodash is a JavaScript library that provides multiple utility functions, and one of the most commonly used functions in the Lodash library is the cloneDeep() method. This method helps to clone objects in depth, and can also clone the limitations of the JSON.stringify() method, that is, non-serializable properties.\n\n```javascript\nconst _ = require(\"lodash\");\n\nfunction example() {\n  let obj1 = { a: 0, b: { c: 0 } };\n  let obj2 = _.cloneDeep(obj1);\n  obj1.a = 4;\n  obj1.b.c = 4;\n  console.log(JSON.stringify(obj1)); // { \"a\": 4, \"b\": { \"c\": 4}}\n  console.log(JSON.stringify(obj2)); // { \"a\": 0, \"b\": { \"c\": 0}}\n}\n\nexample();\n```\n\n## Conclusion\n\nCopying objects in JavaScript can be quite daunting especially if you’re new to JavaScript and don’t know your way around the language. Hopefully this article helped you understand and avoid future pitfalls you may encounter copying objects.\n\n---\n\nReference: [MDN|Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)"
+    },
+    {
+      "id": "djang0-blog",
+      "metadata": {
+        "permalink": "/blog/djang0-blog",
+        "source": "@site/blog/2021-02-13-Django-blog.md",
+        "title": "Django project - A Twitter Like Web APP",
+        "description": "A twitter like web app built with Django.",
+        "date": "2021-02-13T00:00:00.000Z",
+        "formattedDate": "February 13, 2021",
+        "tags": [
+          {
+            "label": "django",
+            "permalink": "/blog/tags/django"
+          },
+          {
+            "label": "heroku",
+            "permalink": "/blog/tags/heroku"
+          },
+          {
+            "label": "backend",
+            "permalink": "/blog/tags/backend"
+          }
+        ],
+        "readingTime": 0.22,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Fullstack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "djang0-blog",
+          "title": "Django project - A Twitter Like Web APP",
+          "author": "Haochen Qi",
+          "author_title": "Fullstack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "django",
+            "heroku",
+            "backend"
+          ]
+        },
+        "prevItem": {
+          "title": "Shallow Copy vs. Deep Copy",
+          "permalink": "/blog/understand-copy-in-js"
+        },
+        "nextItem": {
+          "title": "What is Web Accessibility?",
+          "permalink": "/blog/web-accessibility"
+        }
+      },
+      "content": "A twitter like web app built with Django.\n\n<!--truncate-->\n\n## Description\n\nIn this app, you can register an account, login and update your profile picture, and post and manage your content. Try the demo [here](https://quiet-escarpment-41189.herokuapp.com/) with a testing account.\n\nUsername: TestUser\n\nPassword: testing321\n\n![screenshot](/files/django-blog.png)"
+    },
+    {
+      "id": "web-accessibility",
+      "metadata": {
+        "permalink": "/blog/web-accessibility",
+        "source": "@site/blog/2021-01-18-Web-Accessibility.md",
+        "title": "What is Web Accessibility?",
+        "description": "In this blog, we are going to learn web accessibility.",
+        "date": "2021-01-18T00:00:00.000Z",
+        "formattedDate": "January 18, 2021",
+        "tags": [
+          {
+            "label": "Web Accessibility",
+            "permalink": "/blog/tags/web-accessibility"
+          },
+          {
+            "label": "Web development",
+            "permalink": "/blog/tags/web-development"
+          }
+        ],
+        "readingTime": 2.64,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Fullstack Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "web-accessibility",
+          "title": "What is Web Accessibility?",
+          "author": "Haochen Qi",
+          "author_title": "Fullstack Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "Web Accessibility",
+            "Web development"
+          ]
+        },
+        "prevItem": {
+          "title": "Django project - A Twitter Like Web APP",
+          "permalink": "/blog/djang0-blog"
+        },
+        "nextItem": {
+          "title": "Cozy Space - A React Furniture Store",
+          "permalink": "/blog/React Furniture Store"
+        }
+      },
+      "content": "In this blog, we are going to learn web accessibility.\n\n## What is Web Accessibility?\n\n> \"The power of the Web is in its universality. Access by everyone regardless of disability is an essential aspect\" - Tim Berners-Lee\n\nWeb accessibility is the concept that technology need to be equally accessible for people with and without disabilites. The Web is fundamentally designed to work for all people, whatever their hardware, software, language, location, or ability. When the Web meets this goal, it is accessible to people with a diverse range of hearing, movement, sight, and cognitive ability.\n\nThus the impact of disability is radically changed on the Web because the Web removes barriers to communication and interaction that many people face in the physical world. However, when websites, applications, technologies, or tools are badly designed, they can create barriers that exclude people from using the Web.\n\n<!--truncate-->\n\n## Who does Web Accessibility help?\n\nAccessibility supports social inclusion for people with disabilities as well as others, such as:\n\n- older people\n- people in rural areas\n- people in developing countries\n\nWeb accessibility encompasses all disabilities that affect access to the Web, including:\n\n- auditory\n- cognitive\n- \\*neurological\n- physical\n- speech\n- visual\n\nWeb accessibility also benefits people without disabilities, for example:\n\n- people using mobile phones, smart watches, smart TVs, and other devices with small screens, different input modes, etc.\n- older people with changing abilities due to ageing\n- people with “temporary disabilities” such as a broken arm or lost glasses\n- people with “situational limitations” such as in bright sunlight or in an environment where they cannot listen to audio\n- people using a slow Internet connection, or who have limited or expensive bandwidth\n\n## Why Web Accessability is important?\n\nThe Web is an increasingly important resource in many aspects of life: education, employment, government, commerce, health care, recreation, and more. It is essential that the Web be accessible in order to provide equal access and equal opportunity to people with diverse abilities. Access to information and communications technologies, including the Web, is defined as a basic human right in the United Nations Convention on the Rights of Persons with Disabilities (UN CRPD).\n\nThe Web offers the possibility of unprecedented access to information and interaction for many people with disabilities. That is, the accessibility barriers to print, audio, and visual media can be much more easily overcome through web technologies.\n\nThere is also a strong business case for accessibility. As shown in the previous section, accessible design improves overall user experience and satisfaction, especially in a variety of situations, across different devices, and for older users. Accessibility can enhance your brand, drive innovation, and extend your market reach.\n\nWeb accessibility is required by law in many situations.\n\n## Making the Web Accessible\n\nWeb accessibility depends on several components working together, including web technologies, web browsers and other \"user agents\", authoring tools, and websites.\n\nThe W3C Web Accessibility Initiative (WAI) develops technical specifications, guidelines, techniques, and supporting resources that describe accessibility solutions. These are considered international standards for web accessibility; for example, WCAG 2.0 is also an ISO standard: ISO/IEC 40500.\n\n---\n\nReference: [W3C Accessibility Fundamentals](https://www.w3.org/WAI/fundamentals/accessibility-intro/#what)"
+    },
+    {
+      "id": "React Furniture Store",
+      "metadata": {
+        "permalink": "/blog/React Furniture Store",
+        "source": "@site/blog/2021-01-04-react-store.md",
+        "title": "Cozy Space - A React Furniture Store",
+        "description": "A online furniture store built with React and React hooks(useReduce and useContext).",
+        "date": "2021-01-04T00:00:00.000Z",
+        "formattedDate": "January 4, 2021",
+        "tags": [
+          {
+            "label": "react",
+            "permalink": "/blog/tags/react"
+          },
+          {
+            "label": "contentful",
+            "permalink": "/blog/tags/contentful"
+          },
+          {
+            "label": "furniture",
+            "permalink": "/blog/tags/furniture"
+          }
+        ],
+        "readingTime": 0.215,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Front End Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "React Furniture Store",
+          "title": "Cozy Space - A React Furniture Store",
+          "author": "Haochen Qi",
+          "author_title": "Front End Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "react",
+            "contentful",
+            "furniture"
+          ]
+        },
+        "prevItem": {
+          "title": "What is Web Accessibility?",
+          "permalink": "/blog/web-accessibility"
+        },
+        "nextItem": {
+          "title": "A Simple Recipe React App",
+          "permalink": "/blog/A_Simple_Recipe_React_App"
+        }
+      },
+      "content": "A online furniture store built with React and React hooks(useReduce and useContext).\n\n<!--truncate-->\n\nDesign your dream home with our various morden furnitures.\n\nTry the demo [here](https://www.cozyspace.co).\n\n## Authentication with Auth0\n\nSimple sign up with your email or google account.\n\n## A ScreenShot\n\n![screenshot](/files/furniture-store.png)"
+    },
+    {
+      "id": "A_Simple_Recipe_React_App",
+      "metadata": {
+        "permalink": "/blog/A_Simple_Recipe_React_App",
+        "source": "@site/blog/2020-12-23-Recipe-app.md",
+        "title": "A Simple Recipe React App",
+        "description": "Find your favorite food recipe! Click here to try the demo.",
+        "date": "2020-12-23T00:00:00.000Z",
+        "formattedDate": "December 23, 2020",
+        "tags": [
+          {
+            "label": "react",
+            "permalink": "/blog/tags/react"
+          },
+          {
+            "label": "receipe",
+            "permalink": "/blog/tags/receipe"
+          },
+          {
+            "label": "EDAMAM",
+            "permalink": "/blog/tags/edamam"
+          }
+        ],
+        "readingTime": 0.295,
+        "hasTruncateMarker": true,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Front End Developer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "A_Simple_Recipe_React_App",
+          "title": "A Simple Recipe React App",
+          "author": "Haochen Qi",
+          "author_title": "Front End Developer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "react",
+            "receipe",
+            "EDAMAM"
+          ]
+        },
+        "prevItem": {
+          "title": "Cozy Space - A React Furniture Store",
+          "permalink": "/blog/React Furniture Store"
+        },
+        "nextItem": {
+          "title": "My First Post",
+          "permalink": "/blog/first_blog"
+        }
+      },
+      "content": "Find your favorite food recipe! Click [here](https://recipe-app.haochenq.vercel.app/) to try the demo.\n\n> Powered by EDAMAM\n\n<!--truncate-->\n\n## How to Use\n\nSearch by the food type like pizza, noodles or even the flavour of food you like!<br/>\n\nSimply type the keywords in the search bar and click the seach button, your receipe is on the way!\n\n## Screen shot\n\n![screenshot](/files/Recipe-hub.png)"
+    },
+    {
+      "id": "first_blog",
+      "metadata": {
+        "permalink": "/blog/first_blog",
+        "source": "@site/blog/2020-11-27-hi.md",
+        "title": "My First Post",
+        "description": "Welcome to my personal blog! This website is build with docusaurus.",
+        "date": "2020-11-27T00:00:00.000Z",
+        "formattedDate": "November 27, 2020",
+        "tags": [
+          {
+            "label": "react",
+            "permalink": "/blog/tags/react"
+          },
+          {
+            "label": "docusaurus",
+            "permalink": "/blog/tags/docusaurus"
+          }
+        ],
+        "readingTime": 0.055,
+        "hasTruncateMarker": false,
+        "authors": [
+          {
+            "name": "Haochen Qi",
+            "title": "Front End Engineer",
+            "url": "https://github.com/HaochenQ",
+            "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+          }
+        ],
+        "frontMatter": {
+          "slug": "first_blog",
+          "title": "My First Post",
+          "author": "Haochen Qi",
+          "author_title": "Front End Engineer",
+          "author_url": "https://github.com/HaochenQ",
+          "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+          "tags": [
+            "react",
+            "docusaurus"
+          ]
+        },
+        "prevItem": {
+          "title": "A Simple Recipe React App",
+          "permalink": "/blog/A_Simple_Recipe_React_App"
+        }
+      },
+      "content": "Welcome to my personal blog! This website is build with docusaurus."
+    }
+  ]
+}

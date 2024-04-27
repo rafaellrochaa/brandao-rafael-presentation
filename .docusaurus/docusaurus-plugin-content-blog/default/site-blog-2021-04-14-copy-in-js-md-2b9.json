@@ -1,0 +1,53 @@
+{
+  "permalink": "/blog/understand-copy-in-js",
+  "source": "@site/blog/2021-04-14-copy-in-js.md",
+  "title": "Shallow Copy vs. Deep Copy",
+  "description": "question",
+  "date": "2021-04-14T00:00:00.000Z",
+  "formattedDate": "April 14, 2021",
+  "tags": [
+    {
+      "label": "Javascript",
+      "permalink": "/blog/tags/javascript"
+    },
+    {
+      "label": "Deep Copy",
+      "permalink": "/blog/tags/deep-copy"
+    },
+    {
+      "label": "Shallow Copy",
+      "permalink": "/blog/tags/shallow-copy"
+    }
+  ],
+  "readingTime": 3.475,
+  "hasTruncateMarker": true,
+  "authors": [
+    {
+      "name": "Haochen Qi",
+      "title": "Fullstack Developer",
+      "url": "https://github.com/HaochenQ",
+      "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+    }
+  ],
+  "frontMatter": {
+    "slug": "understand-copy-in-js",
+    "title": "Shallow Copy vs. Deep Copy",
+    "author": "Haochen Qi",
+    "author_title": "Fullstack Developer",
+    "author_url": "https://github.com/HaochenQ",
+    "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+    "tags": [
+      "Javascript",
+      "Deep Copy",
+      "Shallow Copy"
+    ]
+  },
+  "prevItem": {
+    "title": "How to Upload Files to AWS S3 in Node.js?",
+    "permalink": "/blog/upload-files-to-s3-iwth-node"
+  },
+  "nextItem": {
+    "title": "Django project - A Twitter Like Web APP",
+    "permalink": "/blog/djang0-blog"
+  }
+}

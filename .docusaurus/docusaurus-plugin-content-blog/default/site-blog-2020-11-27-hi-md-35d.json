@@ -1,0 +1,44 @@
+{
+  "permalink": "/blog/first_blog",
+  "source": "@site/blog/2020-11-27-hi.md",
+  "title": "My First Post",
+  "description": "Welcome to my personal blog! This website is build with docusaurus.",
+  "date": "2020-11-27T00:00:00.000Z",
+  "formattedDate": "November 27, 2020",
+  "tags": [
+    {
+      "label": "react",
+      "permalink": "/blog/tags/react"
+    },
+    {
+      "label": "docusaurus",
+      "permalink": "/blog/tags/docusaurus"
+    }
+  ],
+  "readingTime": 0.055,
+  "hasTruncateMarker": false,
+  "authors": [
+    {
+      "name": "Haochen Qi",
+      "title": "Front End Engineer",
+      "url": "https://github.com/HaochenQ",
+      "imageURL": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4"
+    }
+  ],
+  "frontMatter": {
+    "slug": "first_blog",
+    "title": "My First Post",
+    "author": "Haochen Qi",
+    "author_title": "Front End Engineer",
+    "author_url": "https://github.com/HaochenQ",
+    "author_image_url": "https://avatars1.githubusercontent.com/u/44130343?s=400&u=a5a4729addf5c5b972d1d6220546273ff6e00eb4&v=4",
+    "tags": [
+      "react",
+      "docusaurus"
+    ]
+  },
+  "prevItem": {
+    "title": "A Simple Recipe React App",
+    "permalink": "/blog/A_Simple_Recipe_React_App"
+  }
+}

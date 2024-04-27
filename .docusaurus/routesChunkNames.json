@@ -1,0 +1,32 @@
+{
+  "/brandao-rafael-presentation/pt-br/docs-abc": {
+    "__comp": "1be78505",
+    "__context": {
+      "plugin": "595ed226"
+    },
+    "versionMetadata": "935f2afb"
+  },
+  "/brandao-rafael-presentation/pt-br/docs/-47d": {
+    "__comp": "17896441",
+    "content": "b2f90839"
+  },
+  "/brandao-rafael-presentation/pt-br/docs/doc2-68e": {
+    "__comp": "17896441",
+    "content": "df361e2b"
+  },
+  "/brandao-rafael-presentation/pt-br/docs/doc3-f0d": {
+    "__comp": "17896441",
+    "content": "616665f6"
+  },
+  "/brandao-rafael-presentation/pt-br/docs/mdx-476": {
+    "__comp": "17896441",
+    "content": "ce3e42ad"
+  },
+  "/brandao-rafael-presentation/pt-br/-160": {
+    "__comp": "c4f5d8e4",
+    "__context": {
+      "plugin": "051d5d92"
+    },
+    "config": "5e9f5e1a"
+  }
+}
