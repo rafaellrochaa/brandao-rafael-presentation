@@ -97,6 +97,13 @@ html[data-theme="dark"] .hero {
 .footer {
   margin-top: 4em;
 }
+
+@media screen and (max-width: 500px) {
+  h2.MuiTypography-root.MuiTypography-h2.MuiTypography-gutterBottom {
+    font-size: 1.25rem;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .hero {
     grid-template-columns: 1fr;
@@ -235,6 +242,7 @@ html[data-theme="dark"] .about-stack span {
   cursor: pointer;
   color: rgb(113, 178, 240);
 }
+
 @media screen and (min-width: 576px) {
   .work-img {
     display: inline;

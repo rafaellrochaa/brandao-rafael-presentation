@@ -53,17 +53,17 @@ function Home() {
     <Layout
       //title={` ${siteConfig.title}`}
       title={`Presentation`}
-      description="Description will go into a meta tag in <head />"
+      description="A little site to present my experiences as a developer"
     >
       <Grid container style={{ padding: "5%" }} className="hero">
         {/*Personal Intro */}
         <Grid item xs={12} lg={6} className="homeIntro">
           <animated.div style={animatedTexts[0]}>
             <Typography variant="h2" gutterBottom>
-              <Translate>Welcome! I am</Translate>
+              <Translate>Welcome, I am</Translate>
               <span className="intro__name"> {siteConfig.title}</span>
               {/* <Typography variant="body2">
-                <span>{siteConfig.tagline}</span>
+                <span>"{siteConfig.tagline}"</span>
               </Typography> */}
             </Typography>
           </animated.div>
