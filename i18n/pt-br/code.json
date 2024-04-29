@@ -15,7 +15,7 @@
     "message":"Maio-2013 a Novembro-2021"
   },
   "Responsible for B3 files reading system (SMPISO standard)":{
-    "message":"Responsável pelo sistema de leitura de arquvivos da B3 (SMPISO)"
+    "message":"Responsável pelo sistema de leitura de arquivos da B3 (SMPISO)"
   },
   "Standardizing solutions with dependency injection":{
     "message":"Padronizando soluções com injeção de dependência"
@@ -42,7 +42,7 @@
       "message":"Desenvolvimento de robôs para leitura de dados em sites que não possuem API"
   },
   "Senior Systems Analyst, Equities & Derivatives":{
-    "message": "Analista de sistemas sistemas sênior, Equities & Derivatives"
+    "message": "Analista de sistemas sênior, Equities & Derivatives"
   },
   "Systems Analyst, Onshore Investment Funds":{
     "message": "Analista de sistemas - Fundos de investimento onshore"
@@ -53,16 +53,13 @@
   "submit here": {
     "message": "enviar"
   },
-  "exp-1":{
-    "message": "teste"
-  },
   "Last Experiences": {
     "message": "Últimas experiências"
   },
   "Welcome! I am": {
     "message": "Bem vindo! Eu sou"
   },
-  "An experienced developer with solid knowledge in C#, .Net platform and enthusiast in the world of multi cloud and dev ops. Experience in support, automation and performance optimization in projects, in addition to leading some projects and planning improvements in meetings with other areas.": {
+  "I'm an experienced developer with solid knowledge in C#, .Net platform and enthusiast in the world of multi cloud and dev ops. I have experience in support, automation and performance optimization in projects, in addition to leading some projects and planning improvements in meetings with other areas.": {
     "message": "Desenvolvedor experiente, com sólidos conhecimentos em C#, plataforma .Net e entusiasta no mundo da nuvem e dev ops. Experiência em suporte, automação e otimização de performance em projetos, além de liderar alguns projetos e planejar melhorias em reuniões com outras áreas."
   },
   "My Skills:": {

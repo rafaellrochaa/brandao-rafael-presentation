@@ -70,7 +70,7 @@ function Home() {
           <animated.div style={animatedTexts[1]}>
             <Typography variant="body1">
               <Translate>
-              An experienced developer with solid knowledge in C#, .Net platform and enthusiast in the world of multi cloud and dev ops. Experience in support, automation and performance optimization in projects, in addition to leading some projects and planning improvements in meetings with other areas.
+              I'm an experienced developer with solid knowledge in C#, .Net platform and enthusiast in the world of multi cloud and dev ops. I have experience in support, automation and performance optimization in projects, in addition to leading some projects and planning improvements in meetings with other areas.
               </Translate>
             </Typography>
           </animated.div>
